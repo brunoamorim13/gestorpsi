@@ -39,7 +39,7 @@ GNU General Public License for more details.
 	</label>
 	
 	<label>{% trans "ZIP Code" %}<br />
-	<input type="text" maxlength="10" class="medium" name="zipCode" value="{{ address.zipCode }}" />
+	<input type="text" maxlength="10" class="medium" name="zipCode" value="{{ address.zipCode }}" mask="99999-999"/>
 	</label>
 
 	<label style="float:left;">{% trans "Country" %}<br />
