@@ -1093,7 +1093,7 @@ fieldset div {
 	display: block;
 }
 
-div.login img {
+div.login div.ff_not_ok img {
     float: left;
 }
 
