@@ -27,7 +27,7 @@ from django.utils import simplejson
 from django.db.models import Q
 from django.contrib import messages
 from swingtime.utils import create_timeslot_table
-from gestorpsi.schedule.models import ScheduleOccurrence, OccurrenceConfirmation, OccurrenceFamily, OccurrenceEmployees
+from gestorpsi.schedule.models import ScheduleOccurrence, OccurrenceConfirmation, OccurrenceFamily, OccurrenceEmployees, Occurrence
 from gestorpsi.referral.models import Referral
 from gestorpsi.referral.forms import ReferralForm
 from gestorpsi.place.models import Place, Room
@@ -94,13 +94,41 @@ def add_event(
 
         if recurrence_form.is_valid():
             devices = DeviceDetails.objects.filter(id__in=request.POST.getlist('device')) # filter devices based on selection
-            start_occurrence_date = datetime(year=request.POST.get('until_year'), month=request.POST.get('until_month'), day=request.POST.get('until_day')) # create start date based on schedule, with hours, minutes and seconds equals 0
-            start_delta = timedelta(seconds=request.POST.get('start_time_delta')) # create a start delta time
+            start_occurrence_date = end_occurrence_date = datetime(
+                year=int(request.POST.get('until_year')),
+                month=int(request.POST.get('until_month')),
+                day=int(request.POST.get('until_day'))
+                )
+            start_delta = timedelta(seconds=int(request.POST.get('start_time_delta'))) # create a start delta time
+            end_delta = timedelta(seconds=int(request.POST.get('end_time_delta')))
             start_device_schedule = (start_occurrence_date + start_delta) # get correct start time of device schedule
-            for device in devices:  # iterate throughout devices selected to check whether or not they are scheduled in selected time
-                occurence = get_object_or_None(Occurrence, start_time=start_device_schedule) # try to check if there's any occurrence with the device in specified time
-
-                                                      
+            end_device_schedule = (end_occurrence_date + end_delta)
+            for device in devices:  # iterate throughout devices selected to check whether or not they are scheduled in selected time                                                          
+                occurrence = Occurrence.objects.filter(
+                    start_time__range=(
+                        start_device_schedule,
+                        end_device_schedule)
+                    ) # try to check if there's any occurrence with the device in specified time
+                if len(occurrence) is not 0:
+                    client = get_object_or_None(Client,pk=request.POST.get('client'), \
+                                                    person__organization=request.user.get_profile().org_active)
+                    room = get_object_or_None(Room, pk=request.POST.get('room'), \
+                                                  place__organization=request.user.get_profile().org_active)
+                    return render_to_response(
+                        template,
+                        dict(
+                            dtstart=datetime.now(),
+                            event=event_form_class(),
+                            recurrence_form=recurrence_form,
+                            group=ServiceGroup.objects.filter(service__organization=request.user.get_profile().org_active, active=True),
+                            room=room,
+                            referral=get_object_or_None(Referral,pk=request.POST.get('referral'), service__organization=request.user.get_profile().org_active),
+                            object=client,
+                            room_id=room.id,
+                            ),
+                        context_instance=RequestContext(request)
+                        )
+                    
             if not request.POST.get('group'): # booking single client
                 referral = get_object_or_404(Referral, pk=request.POST.get('referral'), service__organization=request.user.get_profile().org_active)
                 event = recurrence_form.save(referral)
@@ -115,6 +143,7 @@ def add_event(
                         else:
                             if not event.errors:
                                 event = recurrence_form.save(group_member.referral, True) # ignore busy check
+
 
             if not event.errors:
                 messages.success(request, _('Schedule saved successfully'))
