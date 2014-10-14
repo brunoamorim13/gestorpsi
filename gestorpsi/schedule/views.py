@@ -15,7 +15,7 @@ GNU General Public License for more details.
 """
 
 import calendar
-import locale
+#import locale
 from dateutil import parser
 from datetime import datetime, timedelta
 import datetime as datetime_
@@ -43,7 +43,8 @@ from gestorpsi.device.models import DeviceDetails
 
 
 def _access_check_by_occurrence(request, occurrence):
-    from gestorpsi.client.views import _access_check_referral_write, _access_check
+    #from gestorpsi.client.views import _access_check_referral_write, _access_check
+    from gestorpsi.client.views import _access_check
     denied_to_read = None
     for c in occurrence.event.referral.client.all():
         if not _access_check(request, c):
@@ -136,6 +137,10 @@ def add_event(
             if len(occurrence_start) is not 0 or len(occurrence_end) is not 0:
                 error = recurrence_form._errors.setdefault('device', ErrorList())
                 error.append('Selected device is busy')
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5dd8b56d1829bd7ab0e169b63abb6897760f0099
 
             if not request.POST.get('group'): # booking single client
                 if verify_client(request.POST.get('referral')) == False:
@@ -154,7 +159,7 @@ def add_event(
                         else:
                             if not event.errors:
                                 event = recurrence_form.save(group_member.referral, True) # ignore busy check
-                    
+
 
             if not event.errors:
                 messages.success(request, _('Schedule saved successfully'))
@@ -374,8 +379,13 @@ def occurrence_group(
         context_instance=RequestContext(request)
     )
 
+'''
+    Tiago de Souza Moraes / 26 09 2014
+    place: Place.id
+'''
 @permission_required_with_403('schedule.schedule_list')
 def _datetime_view(
+<<<<<<< HEAD
     request,
     template,
     dt,
@@ -397,11 +407,7 @@ def _datetime_view(
     except:
         object = ''
 
-    try:
-        place = Place.objects.get(pk=place, organization=request.user.get_profile().org_active)
-    except:
-        # Possible to exist more than one place as matriz, filter and get first element
-        place = Place.objects.filter(organization=request.user.get_profile().org_active)[0]
+    place = Place.objects.get( pk=place )
 
     user = request.user
     timeslot_factory = timeslot_factory or create_timeslot_table

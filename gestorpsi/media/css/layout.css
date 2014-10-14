@@ -1072,8 +1072,8 @@ div.schedule #search_header {
 #nav_back, #nav_fwd {
         position: absolute;
         left: 10px;
-        top: 170px;
-        z-index: 3;
+        top: 10px;
+
 }
 #nav_fwd {
         left: 60px;
@@ -1381,7 +1381,7 @@ div.form_mini, div.form_mini_noinsert {
         border-bottom: 1px solid #aaaaaa;
         border-left: 1px solid #aaaaaa;
         border-right: 1px solid #aaaaaa;
-        -moz-border-radius: 0 0 15px 15px; 
+        -moz-border-radius: 0 0 15px 15px;
         -webkit-border-radius: 0 0 15px 15px;
         z-index: 6;
 }
@@ -1393,7 +1393,7 @@ a.submit, div.form_mini input[type=submit], div.form_mini_noinsert input[type=su
         background-color: #ecedee;
         margin: 0px 0 0 0;
         border: 1px solid #999999;
-        -moz-border-radius: 15px; 
+        -moz-border-radius: 15px;
         -webkit-border-radius: 15px;
         color: #666;
         font-size: 13px;
@@ -1639,7 +1639,7 @@ form li label {
     clear: both;
     margin-top: 5px !important;
     padding: 0px;
-   
+
 }
 form fieldset li {
     list-style: none;
@@ -1830,11 +1830,11 @@ table.sign_history tbody tr.even {
     float: none;
     height: 26px;
     line-height: 26px;
-    
+
     color: #916F6F;
     font-size: 22px;
     margin: 0;
-    
+
     font-weight: normal;
     padding: 0;
 }

@@ -126,8 +126,28 @@ class Service(models.Model):
             ("service_write", "Can write services"),
         )
 
+
+
     def revision(self):
         return reversion.get_for_object(self).order_by('-revision__date_created').latest('revision__date_created').revision
+
+
+
+    def save(self, *args, **kwargs):
+
+        # check html color is valid
+        '''
+            int(string) == erro, using try and except
+        '''
+        try:
+            if not int(self.color,16) < 16777216 :
+                self.color = 'ffffff' # white
+        except:
+            self.color = 'ffffff' # white
+            
+        super(Service, self).save(*args, **kwargs)
+
+
 
 class ServiceGroup(models.Model):
     id = UuidField(primary_key=True)
