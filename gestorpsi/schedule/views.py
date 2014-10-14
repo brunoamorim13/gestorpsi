@@ -137,10 +137,6 @@ def add_event(
             if len(occurrence_start) is not 0 or len(occurrence_end) is not 0:
                 error = recurrence_form._errors.setdefault('device', ErrorList())
                 error.append('Selected device is busy')
-<<<<<<< HEAD
-=======
-
->>>>>>> 5dd8b56d1829bd7ab0e169b63abb6897760f0099
 
             if not request.POST.get('group'): # booking single client
                 if verify_client(request.POST.get('referral')) == False:
@@ -385,7 +381,6 @@ def occurrence_group(
 '''
 @permission_required_with_403('schedule.schedule_list')
 def _datetime_view(
-<<<<<<< HEAD
     request,
     template,
     dt,
